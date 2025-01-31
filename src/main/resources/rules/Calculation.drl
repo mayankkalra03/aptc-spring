@@ -1,0 +1,34 @@
+package rules;
+
+import com.business.aptc_test.model.Application;
+
+rule "Calculate Applicable Percentage"
+when
+    $app: Application(
+        incomeFPL != null,
+        incomeAmount != null,
+        insurancePremiumAmount != null,
+        !processError
+    )
+then
+    $app.setRangeMin(200.0); 
+    $app.setRangeMax(250.0); 
+    $app.setIniPer(6.30);     
+    $app.setFinPer(8.05);    
+
+    double rangePerc = ($app.getIncomeFPL() - $app.getRangeMin()) / ($app.getRangeMax() - $app.getRangeMin());
+    $app.setRangePerc(rangePerc);
+    double percDiff = $app.getFinPer() - $app.getIniPer();
+    $app.setPercDiff(percDiff);
+    double appPerc = ($app.getRangePerc() * $app.getPercDiff()) + $app.getIniPer();
+	appPerc = Math.round(appPerc * 100.0) / 100.0;
+    $app.setAppPerc(appPerc);
+
+    double affordableAmount = ($app.getIncomeAmount() * $app.getAppPerc()) / 1200;
+    $app.setAffordableAmount(affordableAmount);
+    double maxAPTC = $app.getInsurancePremiumAmount() - $app.getAffordableAmount();
+    if (maxAPTC < 0) {
+        maxAPTC = 0;
+    }
+    $app.setMaxAPTC(maxAPTC);
+end

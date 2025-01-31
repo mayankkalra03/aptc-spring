@@ -1,0 +1,10 @@
+package rules;
+
+import com.business.aptc_test.model.Application;
+
+rule "Initialize IncomeFPL - set to 399 if 400"
+when
+    $app: Application(incomeFPL == 400)
+then
+    $app.setIncomeFPL(399.0); 
+end

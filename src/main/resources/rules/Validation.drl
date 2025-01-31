@@ -1,0 +1,31 @@
+package rules;
+
+import com.business.aptc_test.model.Application;
+
+rule "Validate appID"
+when
+    $app: Application(appID == null || appID.isEmpty()) 
+then
+   $app.setProcessError(true);
+end
+
+rule "Validate incomeAmount"
+when
+    $app: Application(incomeAmount == null) 
+then
+   $app.setProcessError(true);
+end
+
+rule "Validate incomeFPL"
+when
+    $app: Application(incomeFPL == null) 
+then
+   $app.setProcessError(true);
+end
+
+rule "Validate insurancePremiumAmount"
+when
+    $app: Application(insurancePremiumAmount == null) 
+then
+   $app.setProcessError(true);
+end
